@@ -276,33 +276,6 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
             }
             
             String imgUrl = article.getThumnail();
-            /*if (ImageCache.getImage(imgUrl) == null) {
-                //キャッシュがないので、AsyncTaskを実行する
-                if (imgUrl != null && imgUrl.length() > 0) {
-                    holder.imgThum.setTag(imgUrl);
-                    //サムネイル画像のURLが存在する
-                    if (holder.task == null) {
-                        //AsyncTaskが実行されていない
-                        LogUtil.debug(getClass(), "AsyncTaskのインスタンスを生成して、実行");
-                        executeTask(holder, imgUrl);
-                    } else {
-                        //AsyncTaskが実行されている
-                        holder.imgThum.setImageBitmap(null);
-                        if (holder.task.getStatus() == AsyncTask.Status.FINISHED) {
-                            LogUtil.debug(getClass(), "受信に失敗したので、もう一度AsyncTaskを実行");
-                            executeTask(holder, imgUrl);
-                        }
-;                    }
-                } else {
-                    holder.imgThum.setTag("");
-                    holder.imgThum.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.no_image));
-                    //キャッシュがなく、サムネイル画像のURLがない
-                    //LogUtil.debug(getClass(), "サムネイルのURLが存在しないので、ImageVewをGONEにする");
-                    //holder.imgThum.setVisibility(View.GONE);
-                 }
-            } else {
-                holder.imgThum.setImageBitmap(ImageCache.getImage(imgUrl));
-            }*/
             imageLoader.loadImage(imgUrl, holder.imgThum, BitmapFactory.decodeResource(getResources(), R.drawable.no_image));
             holder.txtDate.setText(article.getDate());
             holder.txtTitle.setText(article.getTitle());
