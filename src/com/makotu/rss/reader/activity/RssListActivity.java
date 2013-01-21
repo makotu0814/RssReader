@@ -17,9 +17,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.makotu.rss.reader.R;
 import com.makotu.rss.reader.provider.RssFeeds;
 import com.makotu.rss.reader.util.LayoutUtil;
-import com.makotu.rssreader.R;
 
 public class RssListActivity extends RssBaseActivity implements OnItemClickListener, OnClickListener {
 

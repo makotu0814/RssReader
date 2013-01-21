@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.makotu.rss.reader.R;
 import com.makotu.rss.reader.asynctask.ThumbnailTask;
 import com.makotu.rss.reader.parser.RssParser;
 import com.makotu.rss.reader.provider.RssFeeds;
@@ -31,7 +32,6 @@ import com.makotu.rss.reader.util.ImageCacheParams;
 import com.makotu.rss.reader.util.ImageLoader;
 import com.makotu.rss.reader.util.LayoutUtil;
 import com.makotu.rss.reader.util.LogUtil;
-import com.makotu.rssreader.R;
 
 public class RssArticleListActivity extends RssBaseActivity implements OnClickListener, OnItemClickListener {
 

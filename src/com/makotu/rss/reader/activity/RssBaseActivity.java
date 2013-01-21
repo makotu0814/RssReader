@@ -12,10 +12,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.makotu.rss.reader.R;
 import com.makotu.rss.reader.service.RssReaderService;
 import com.makotu.rss.reader.util.DialogUtil;
 import com.makotu.rss.reader.util.LogUtil;
-import com.makotu.rssreader.R;
 
 public class RssBaseActivity extends Activity {
 

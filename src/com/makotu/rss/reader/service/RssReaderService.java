@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.IBinder;
 
+import com.makotu.rss.reader.R;
 import com.makotu.rss.reader.activity.RssListActivity;
 import com.makotu.rss.reader.parser.RssParser;
 import com.makotu.rss.reader.provider.RssFeeds;
 import com.makotu.rss.reader.util.LogUtil;
 import com.makotu.rss.reader.util.NotificationUtil;
 import com.makotu.rss.reader.util.ToastUtil;
-import com.makotu.rssreader.R;
 
 /**
  * RSSì«Ç›çûÇ›Service
