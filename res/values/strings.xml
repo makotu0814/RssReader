@@ -4,5 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
-
+    <string name="confirm_end_app">アプリケーションを終了しますか？</string>
+    <string name="empty_message">データがありません。</string>
+    <string name="label_article_title">記事タイトル</string>
+    <string name="label_article_date">投稿日時</string>
 </resources>
