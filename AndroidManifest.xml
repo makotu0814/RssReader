@@ -1,24 +1,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.makotu.rssreader"
-    android:versionCode="1"
-    android:versionName="1.0" >
+	package="com.makotu.rss.reader"
+	android:versionCode="1"
+	android:versionName="1.0" >
 
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
+	<uses-sdk
+		android:minSdkVersion="8"
+		android:targetSdkVersion="16" />
+	<uses-permission android:name="android.permission.INTERNET"/>
 
-    <application
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+	<application
+		android:icon="@drawable/ic_launcher"
+		android:label="@string/app_name"
+		android:theme="@style/AppTheme" >
+		<activity
+			android:name="com.makotu.rss.reader.activity.RssListActivity">S
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name="com.makotu.rss.reader.activity.RegistRssFeedActivity"></activity>
+		<activity android:name="com.makotu.rss.reader.activity.RssArticleActivity"></activity>
+		<activity android:name="com.makotu.rss.reader.activity.RssArticleListActivity"></activity>
+		<provider android:name="com.makotu.rss.reader.provider.RssProvider" android:authorities="com.makotu.rss.reader"></provider>
+		<service android:name="com.makotu.rss.reader.service.RssReaderService"></service>
+	</application>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
 </manifest>

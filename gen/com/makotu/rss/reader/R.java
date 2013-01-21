@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.makotu.rssreader;
+package com.makotu.rss.reader;
 
 public final class R {
     public static final class attr {
