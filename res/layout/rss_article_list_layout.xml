@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent">
     <ImageView
         android:id="@+id/imgThumbnail"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentLeft="true"
         android:adjustViewBounds="false"
-        android:contentDescription="@string/empty_message"
-        android:scaleType="centerCrop" >
-
+        android:contentDescription="@string/empty_message" >
     </ImageView>
     <TextView
         android:id="@+id/txt_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/imgThumbnail"
-        android:text="@string/label_article_date"
-        android:textSize="20sp" >
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/label_article_date">
     </TextView>
 
     <TextView
@@ -29,6 +26,8 @@
         android:layout_below="@+id/txt_date"
         android:layout_toRightOf="@+id/imgThumbnail"
         android:text="@string/label_article_title"
-        android:textSize="20sp" >
+        android:minLines="1"
+        android:maxLines="3"
+        android:textAppearance="?android:attr/textAppearanceSmall" >
     </TextView>
 </RelativeLayout>

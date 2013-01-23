@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.makotu.rss.reader.R;
 import com.makotu.rss.reader.asynctask.ThumbnailTask;
