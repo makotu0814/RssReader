@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.makotu.rss.reader.R;
 import com.makotu.rss.reader.asynctask.ThumbnailTask;
@@ -32,6 +34,7 @@ import com.makotu.rss.reader.util.ImageCacheParams;
 import com.makotu.rss.reader.util.ImageLoader;
 import com.makotu.rss.reader.util.LayoutUtil;
 import com.makotu.rss.reader.util.LogUtil;
+import com.makotu.rss.reader.util.ToastUtil;
 
 public class RssArticleListActivity extends RssBaseActivity implements OnClickListener, OnItemClickListener {
 
@@ -169,7 +172,7 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
         Bundle bundle = intent.getExtras();
 
         //RSSフィード一覧画面から選択された、RSSフィードのIDを取得
-        String rssId = (String)bundle.get("id");
+        final String rssId = (String)bundle.get("id");
         //削除ボタンクリック時
         if (view == deleteBtn) {
             //RssFeedContentsテーブルへのDelete文のWhere句の作成
@@ -191,7 +194,7 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
             back();
         } else if (view == reGetBtn) {
             //RSSフィード一覧画面で選択されたRSSフィードのURLを取得
-            String url = (String)bundle.get("url");
+            final String url = (String)bundle.get("url");
 
             //Contentsを削除
             StringBuffer whereRssFeedContents = new StringBuffer(RssFeeds.RssFeedContentColumns.CHANNEL_ID).append("=").append(rssId);
@@ -199,11 +202,23 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
             //RssFeedContentsテーブルより選択されたRSSフィードのIDを削除
             RssFeeds.delete(RssFeeds.RssFeedContentColumns.CONTENT_URI, whereRssFeedContents.toString(), null);
 
+            final Handler handler = new Handler();
             //選択されたRSSフィードのURLから再度RSSフィードの値を取得しデータベースへ格納
-            RssParser.parseRssContents(url, rssId);
+            new Thread(new Runnable() {
+                public void run() {
+                    // RssContentsパース処理
+                    RssParser.parseRssContents(url, rssId);
+                        handler.post(new Runnable() {
+                            
+                            public void run() {
+                                //データベースより記事一覧の値を取得し、記事一覧のListViewを更新
+                                ToastUtil.showToastLong(RssArticleListActivity.this, "RSSの再取得に成功しました。");
+                                getArrayAdapter();
+                            }
+                        }); 
+                }
+            }).start();
 
-            //データベースより記事一覧の値を取得し、記事一覧のListViewを更新
-            getArrayAdapter();
         }
     }
 
@@ -274,7 +289,7 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
-            
+
             String imgUrl = article.getThumnail();
             imageLoader.loadImage(imgUrl, holder.imgThum, BitmapFactory.decodeResource(getResources(), R.drawable.no_image));
             holder.txtDate.setText(article.getDate());

@@ -1,6 +1,10 @@
 package com.makotu.rss.reader.activity;
 
+import java.lang.ref.WeakReference;
+
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -117,33 +121,75 @@ public class RegistRssFeedActivity extends RssBaseActivity implements OnClickLis
         // RSSフィード追加ボタンクリック時
         if (view == rssAddBtn) {
             String rssUrl = rssFeed.getText().toString();
-
-            //IDの初期値
-            int id = -1;
-            //RSSフィードの更新間隔を取得
             int updHour = rg.getCheckedRadioButtonId();
 
-            //RSSフィードのヘッダ情報をDBへ格納
-            if ((id = RssParser.parseRssFeed(rssUrl, updHour)) >= 0) {
-                ToastUtil.showToastLong(this, "RSSフィードの登録に成功しました。コンテンツを取得しています。");
-
-                //RSSの記事を読み込みデータベースへ登録
-                RssParser.parseRssContents(rssUrl, String.valueOf(id));
-                ToastUtil.showToastShort(this, "RSSコンテンツを取得しました。");
-
-                //画面の戻り値を設定
-                setResult(RESULT_OK);
-                //画面の終了
-                back();
-            } else {
-                ToastUtil.showToastShort(this, "RSSフィードの登録に失敗しました。すでに登録されているか、RSS2.0に対応しているか確認してください");
-            }
+            //別スレッドでネットワークからRSSを取得し、データベースに挿入
+            getRssFromNetwork(rssUrl, updHour);
         } else if (view == clearBtn) {
             //RSSフィードの値をクリア
             rssFeed.setText("");
         }
     }
 
+    private void getRssFromNetwork(final String rssUrl, final int updHour) {
+       new Thread(new Runnable() { 
+            public void run() {
+                Message resultMsg = new Message();
+                resultMsg.arg1 = RssParser.parseRssFeed(rssUrl, updHour);
+                resultMsg.obj = rssUrl;
+                handler.sendMessage(resultMsg);
+            }
+       }).start();
+    }
+
+    Handler handler = new RssParseHandler(this);
+
+    private static class RssParseHandler extends Handler {
+        private final WeakReference<RegistRssFeedActivity> mActivity;
+     
+        public RssParseHandler(RegistRssFeedActivity activity) {
+            mActivity = new WeakReference<RegistRssFeedActivity>(activity);
+        }
+     
+        @Override
+        public void handleMessage(Message msg) {
+            final RegistRssFeedActivity activity = mActivity.get();
+            if (activity == null) {
+                return;
+            }
+            final int id = msg.arg1;
+            final String rssUrl = (String)msg.obj;
+
+            if (id > 0) {
+                //RSSの記事を読み込みデータベースへ登録
+                new Thread(new Runnable() {
+                    
+                    public void run() {
+                    //別スレッドでRSSコンテンツを取得
+                        RssParser.parseRssContents(rssUrl, String.valueOf(id));
+                            new Handler().post(new Runnable() {
+                                
+                                public void run() {
+                                    ToastUtil.showToastLong(activity, "RSSフィードの登録に成功しました。コンテンツを取得しています。");
+                                }
+                            });
+                    }
+                });
+                ToastUtil.showToastShort(activity, "RSSコンテンツを取得しました。");
+
+                //画面の戻り値を設定
+                activity.setResult(RESULT_OK);
+                //画面の終了
+                activity.back();
+            } else {
+                ToastUtil.showToastShort(activity, "RSSフィードの登録に失敗しました。すでに登録されているか、RSS2.0に対応しているか確認してください");
+            }
+        }
+    }
+
+    /**
+     * キーイベント処理
+     */
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         setResult(RESULT_OK);

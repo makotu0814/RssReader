@@ -20,8 +20,8 @@ import org.xml.sax.SAXException;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.net.Uri;
-import android.os.StrictMode;
 
+import com.makotu.rss.reader.consts.Consts;
 import com.makotu.rss.reader.provider.RssFeeds;
 import com.makotu.rss.reader.util.LogUtil;
 
@@ -33,11 +33,7 @@ import com.makotu.rss.reader.util.LogUtil;
  */
 public class RssParser {
 
-    private static final String DCDATEPATTERN_STRING = "yyyy-MM-dd'T'HH:mm:ssZ";
-    private static final String PUBDATEPATTERN_STRING = "EEE, dd MMM yyyy HH:mm:ss Z";
-
     public static Document fetch(String url) {
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
         URL u = null;
         Document doc = null;
@@ -210,9 +206,9 @@ public class RssParser {
                     articleNodeValue = node.getAttributes().getNamedItem("url").getNodeValue();
                     values.put(RssFeeds.RssFeedContentColumns.ITEM_THUMNAIL, articleNodeValue);
                 } else if (articleNodeName.equalsIgnoreCase("pubDate")) {
-                    insertNewsDate(values, articleNodeValue, PUBDATEPATTERN_STRING);
+                    insertNewsDate(values, articleNodeValue, Consts.PUBDATEPATTERN_STRING);
                 } else if (articleNodeName.equalsIgnoreCase("dc:date")) {
-                    insertNewsDate(values, articleNodeValue, DCDATEPATTERN_STRING);
+                    insertNewsDate(values, articleNodeValue, Consts.DCDATEPATTERN_STRING);
                 }
             }
             RssFeeds.insertIfNotExists(RssFeeds.RssFeedContentColumns.CONTENT_URI, selection.toString(), null, values);
