@@ -22,8 +22,8 @@
 		<activity android:name="com.makotu.rss.reader.activity.RegistRssFeedActivity"></activity>
 		<activity android:name="com.makotu.rss.reader.activity.RssArticleActivity"></activity>
 		<activity android:name="com.makotu.rss.reader.activity.RssArticleListActivity"></activity>
-		<provider android:name="com.makotu.rss.reader.provider.RssProvider" android:authorities="com.makotu.rss.reader"></provider>
 		<service android:name="com.makotu.rss.reader.service.RssReaderService"></service>
+		<provider android:name=".provider.RssProvider" android:authorities="com.makotu.rss.reader"></provider>
 	</application>
 
 </manifest>

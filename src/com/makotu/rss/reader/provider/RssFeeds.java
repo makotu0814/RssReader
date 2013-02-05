@@ -29,7 +29,7 @@ public abstract class RssFeeds {
     public static final class RssFeedColumns implements BaseColumns {
 
         //RssFeedsテーブルを示すUri
-        public static final Uri CONTENT_URI = Uri.parse("content://com.example.rss.reader/rss");
+        public static final Uri CONTENT_URI = Uri.parse("content://com.makotu.rss.reader/rss");
 
         //RssFeedsテーブルの項目 チャンネルLink
         public static final String CHANNEL_LINK = "channel_link";
@@ -70,7 +70,7 @@ public abstract class RssFeeds {
      */
     public static final class RssFeedContentColumns implements BaseColumns {
         //RssFeedContentsを示すUri
-        public static final Uri CONTENT_URI = Uri.parse("content://com.example.rss.reader/rsscontents");
+        public static final Uri CONTENT_URI = Uri.parse("content://com.makotu.rss.reader/rsscontents");
 
         //RssFeedContentsテーブル項目 チャンネルID
         public static final String CHANNEL_ID = "channel_id";

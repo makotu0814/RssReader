@@ -28,14 +28,14 @@ public class RssProvider extends ContentProvider {
     static {
         //UrlMatcherの生成
         URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-        //Urlが「com.example.rss.reader/rss」であればRSSFEEDS(=1001)の値を返却する
-        URI_MATCHER.addURI("com.example.rss.reader", "rss", RSSFEEDS);
-        //UrIが「com.example.rss.reader/rss/数値」であればRSSFEED_ID(=1002)の値を返却する
-        URI_MATCHER.addURI("com.example.rss.reader", "rss/#", RSSFEED_ID);
-        //UrIが「com.example.rss.reader/rsscontens」であればRSSFEED_CONTENTS(=1003)の値を返却する
-        URI_MATCHER.addURI("com.example.rss.reader", "rsscontents", RSSFEED_CONTENTS);
-        //UrIが「com.example.rss.reader/rsscontens/数値」であればRSSFEED_CONTENT_ID(=1004)の値を返却する
-        URI_MATCHER.addURI("com.example.rss.reader", "rsscontents/#", RSSFEED_CONTENT_ID);
+        //Urlが「com.makotu.rss.readerr/rss」であればRSSFEEDS(=1001)の値を返却する
+        URI_MATCHER.addURI("com.makotu.rss.reader", "rss", RSSFEEDS);
+        //UrIが「com.makotu.rss.readerr/rss/数値」であればRSSFEED_ID(=1002)の値を返却する
+        URI_MATCHER.addURI("com.makotu.rss.reader", "rss/#", RSSFEED_ID);
+        //UrIが「com.makotu.rss.readerr/rsscontens」であればRSSFEED_CONTENTS(=1003)の値を返却する
+        URI_MATCHER.addURI("com.makotu.rss.reader", "rsscontents", RSSFEED_CONTENTS);
+        //UrIが「com.makotu.rss.readerr/rsscontens/数値」であればRSSFEED_CONTENT_ID(=1004)の値を返却する
+        URI_MATCHER.addURI("com.makotu.rss.reader", "rsscontents/#", RSSFEED_CONTENT_ID);
     }
 
     /**

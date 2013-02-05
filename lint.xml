@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
     <issue id="NewApi">
+        <ignore path="src\com\makotu\rss\reader\activity\RssListActivity.java" />
         <ignore path="src\com\makotu\rss\reader\parser\RssParser.java" />
     </issue>
     <issue id="UseValueOf" severity="ignore" />

@@ -7,13 +7,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -21,22 +20,10 @@ import com.makotu.rss.reader.R;
 import com.makotu.rss.reader.provider.RssFeeds;
 import com.makotu.rss.reader.util.LayoutUtil;
 
-public class RssListActivity extends RssBaseActivity implements OnItemClickListener, OnClickListener {
+public class RssListActivity extends RssBaseActivity implements OnItemClickListener {
 
     /** RSSフィードListView */
     private ListView rssFeedList;
-
-    /** RSSリーダーの追加ボタン*/
-    private Button addBtn;
-
-    /** RSSリーダーの終了ボタン*/
-    private Button endBtn;
-
-    /** オプションメニュー RSSの追加*/
-    private static final int MENU_ID_ADD = (Menu.FIRST + 1);
-
-    /** オプションメニューRssのリーダーの終了*/
-    private static final int MENU_ID_END = (Menu.FIRST + 2);
 
     /** 選択中のリストID*/
     private long selectListId;
@@ -68,19 +55,6 @@ public class RssListActivity extends RssBaseActivity implements OnItemClickListe
         rssFeedList.setOnItemClickListener(this);
         getArrayAdapter();
 
-        //RSS追加ボタン
-        addBtn = new Button(this);
-        addBtn.setText("RSSフィードの追加");
-        addBtn.setOnClickListener(this);
-
-        //RSS削除ボタン
-        endBtn = new Button(this);
-        endBtn.setText("RSSリーダーの終了");
-        endBtn.setOnClickListener(this);
-        btnLayout.addView(addBtn, LayoutUtil.getLayoutParams(LayoutUtil.WC, LayoutUtil.WC));
-        btnLayout.addView(endBtn, LayoutUtil.getLayoutParams(LayoutUtil.WC, LayoutUtil.WC));
-
-        linearLayout.addView(btnLayout);
         linearLayout.addView(rssFeedList, LayoutUtil.getLayoutParams(LayoutUtil.MP, LayoutUtil.WC));
     }
 
@@ -142,47 +116,33 @@ public class RssListActivity extends RssBaseActivity implements OnItemClickListe
         }
     }
 
-    /**
-     * ボタンクリック時のイベントリスナー
-     */
-    public void onClick(View view) {
-        //RSSフィード追加ボタン
-        if (view == addBtn) {
-            //RSSフィード追加画面へ遷移
-            startRegistRssActivity();
-        } else if (view == endBtn) {
-            //アプリ終了する
-            back();
-        }
-    }
-
-    /**
-     * オプションメニューの追加
+    /** 
+     * 作成したメニューのXMLファイルを展開し、アクションバーに配置する
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, MENU_ID_ADD, Menu.NONE, "RSSフィードの追加");
-        menu.add(Menu.NONE, MENU_ID_END, Menu.NONE, "RSSフィードの削除");
-        return super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actions, menu);
+        return true;
     }
 
-    /**
-     * メニューボタンクリック時のイベントリスナー
+    /** 
+     * アクションバーのメニューが選択された時に呼び出される
      */
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case MENU_ID_ADD:
+        case R.id.action_add:
+            //RSSフィード追加画面へ遷移
             startRegistRssActivity();
             break;
-        case MENU_ID_END:
+        case R.id.action_close:
+            //アプリ終了する
             back();
-            break;
         default:
             break;
         }
-
-        return super.onMenuItemSelected(featureId, item);
+        return true;
     }
 
     /**
@@ -211,4 +171,5 @@ public class RssListActivity extends RssBaseActivity implements OnItemClickListe
         //RSS表示画面の起動
         startActivityForResult(intent, 0);
     }
+
 }

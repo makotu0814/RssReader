@@ -8,4 +8,6 @@
     <string name="empty_message">データがありません。</string>
     <string name="label_article_title">記事タイトル</string>
     <string name="label_article_date">投稿日時</string>
+    <string name="action_bar_close">Clsoe</string>
+    <string name="action_bar_add">Add</string>
 </resources>

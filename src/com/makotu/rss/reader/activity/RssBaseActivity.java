@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,7 +24,10 @@ public class RssBaseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         LogUtil.debug(this, "onCreate");
         super.onCreate(savedInstanceState);
-        
+
+        //ActionBar‚ğ—LŒø‚É‚·‚é‚½‚ß‚Ìˆ—
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+
         //RSSæ“¾Service‚Ì‹N“®
         Intent intent = new Intent(this, RssReaderService.class);
         startService(intent);
