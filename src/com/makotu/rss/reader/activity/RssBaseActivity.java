@@ -28,6 +28,8 @@ public class RssBaseActivity extends Activity {
         //ActionBar‚ğ—LŒø‚É‚·‚é‚½‚ß‚Ìˆ—
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
+        setTitle("");
+
         //RSSæ“¾Service‚Ì‹N“®
         Intent intent = new Intent(this, RssReaderService.class);
         startService(intent);
