@@ -4,5 +4,6 @@
         <ignore path="src\com\makotu\rss\reader\activity\RssListActivity.java" />
         <ignore path="src\com\makotu\rss\reader\parser\RssParser.java" />
     </issue>
+    <issue id="SetJavaScriptEnabled" severity="ignore" />
     <issue id="UseValueOf" severity="ignore" />
 </lint>
