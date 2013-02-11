@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -174,9 +176,11 @@ public class RssParser {
                     //CDATAノードの場合
                     articleNodeValue = childNode.getNodeValue();
                     try {
-                        String imageUrl = getNewsImageUrl(articleNodeValue);
-                        if (isImageUrl(imageUrl)) {
-                            //拡張子が画像ファイル
+                        //String imageUrl = getNewsImageUrl(articleNodeValue);
+                        Pattern p = Pattern.compile("<\\s*img.*src\\s*=\\s*([\\\"'])?([^ \\\"']*)[^>]*>");
+                        Matcher m = p.matcher(articleNodeValue);
+                        if (m.find()) {
+                            String imageUrl = m.group(2);//ここにURLが入る
                             LogUtil.debug(RssParser.class, "imageUrl:" + imageUrl);
                             values.put(RssFeeds.RssFeedContentColumns.ITEM_THUMNAIL, imageUrl);
                         }
