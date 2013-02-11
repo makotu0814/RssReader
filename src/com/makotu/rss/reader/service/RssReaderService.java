@@ -7,6 +7,7 @@ import android.os.IBinder;
 
 import com.makotu.rss.reader.R;
 import com.makotu.rss.reader.activity.RssListActivity;
+import com.makotu.rss.reader.consts.Consts;
 import com.makotu.rss.reader.parser.RssParser;
 import com.makotu.rss.reader.provider.RssFeeds;
 import com.makotu.rss.reader.util.LogUtil;
@@ -19,10 +20,10 @@ import com.makotu.rss.reader.util.ToastUtil;
  * @author Makoto
  *
  */
-public class RssReaderService extends Service implements Runnable{
+public class RssReaderService extends Service implements Runnable {
 
     /** スレッド制御*/
-    private boolean alive = false; 
+    private volatile boolean alive = false; 
 
     /** スレッド*/
     private Thread thread;
@@ -65,10 +66,9 @@ public class RssReaderService extends Service implements Runnable{
         LogUtil.debug(RssReaderService.class, "onDestroy()");
         ToastUtil.showToastShort(this, "RssReaderServiceを停止しました");
 
-        //スレッドの有効フラグをfalseにする
-        this.alive = false;
         //スレッドの停止
-        thread.stop();
+        stopThread();
+
         //ノーティフィケーションマネージャーを破棄
         NotificationUtil.cancelNotification(this, R.drawable.ic_launcher);
     }
@@ -83,7 +83,7 @@ public class RssReaderService extends Service implements Runnable{
         while (this.alive) {
             try {
                 //10分間スレッド休止
-                Thread.sleep(1 * 10 * 60 * 1000);
+                Thread.sleep(Consts.THREAD_SLEEP_INTERVAL);
 
                 //RssFeedsテーブルの値を再取得
                 mRSSCursor.requery();
@@ -120,7 +120,7 @@ public class RssReaderService extends Service implements Runnable{
                 //カーソルを非活性状態
                 mRSSCursor.deactivate();
             } catch (Exception e) {
-                LogUtil.error(getClass(), e.getMessage());
+                LogUtil.error(getClass(), e.toString());
             }
         }
         this.cleanUp();
@@ -131,5 +131,9 @@ public class RssReaderService extends Service implements Runnable{
      */
     private void cleanUp() {
         mRSSCursor.close();
+    }
+
+    private void stopThread() {
+        alive = false;
     }
 }

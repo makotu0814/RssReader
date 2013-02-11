@@ -12,13 +12,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,11 +32,10 @@ import com.makotu.rss.reader.provider.RssFeeds;
 import com.makotu.rss.reader.util.ImageCache;
 import com.makotu.rss.reader.util.ImageCacheParams;
 import com.makotu.rss.reader.util.ImageLoader;
-import com.makotu.rss.reader.util.LayoutUtil;
 import com.makotu.rss.reader.util.LogUtil;
 import com.makotu.rss.reader.util.ToastUtil;
 
-public class RssArticleListActivity extends RssBaseActivity implements OnClickListener, OnItemClickListener {
+public class RssArticleListActivity extends RssBaseActivity implements OnItemClickListener {
 
      /** 記事に対応するURLを格納するマップオブジェクト*/
     private HashMap<Long, String> urlMap = new HashMap<Long, String>();
@@ -43,12 +43,6 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
     /** 記事の一覧を表示するListView*/
     private ListView articleListView;
 
-    /** RSSフィードの削除ボタン*/
-    private Button deleteBtn;
-
-    /** RSSフィードの再取得ボタン*/
-    private Button reGetBtn;
-    
     private ImageLoader imageLoader;
 
     @Override
@@ -57,34 +51,16 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
         //画面レイアウト 縦方向に設定
         LinearLayout displayLayout = new LinearLayout(this);
         displayLayout.setOrientation(LinearLayout.VERTICAL);
-
-        //ボタンレイアウト 横方向に設定
-        LinearLayout btnLayout = new LinearLayout(this);
-        btnLayout.setOrientation(LinearLayout.HORIZONTAL);
         setContentView(displayLayout);
-
-        //RSSフィードの削除ボタン
-        deleteBtn = new Button(this);
-        deleteBtn.setText("RSSフィードを削除");
-        deleteBtn.setOnClickListener(this);
-
-        //RSSフィードの再取得ボタン
-        reGetBtn = new Button(this);
-        reGetBtn.setText("RSSフィードを再取得");
-        reGetBtn.setOnClickListener(this);
-
-        //ボタンレイアウトにボタンを追加
-        btnLayout.addView(deleteBtn, LayoutUtil.getLayoutParams(LayoutUtil.WC, LayoutUtil.WC));
-        btnLayout.addView(reGetBtn, LayoutUtil.getLayoutParams(LayoutUtil.WC, LayoutUtil.WC));
 
         //記事一覧ListViewの生成
         articleListView = new ListView(this);
         articleListView.setOnItemClickListener(this);
 
+        //記事一覧を更新する
         getArrayAdapter();
 
         //ボタンレイアウトと、記事一覧を画面レイアウトに追加
-        displayLayout.addView(btnLayout);
         displayLayout.addView(articleListView);
 
         //ImageLoaderのインスタンス生成
@@ -163,17 +139,29 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
     }
 
     /** 
-     * ボタンクリックのイベントリスナー
-     * @param   view    クリックされたボタンオブジェクト
+     * 作成したメニューのXMLファイルを展開し、アクションバーに配置する
      */
-    public void onClick(View view) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actions_rss_article_list, menu);
+        return true;
+    }
+
+    /** 
+     * アクションバーのメニューが選択された時に呼び出される
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
         //RSSフィード一覧画面から選択された、RSSフィードのIDを取得
         final String rssId = (String)bundle.get("id");
-        //削除ボタンクリック時
-        if (view == deleteBtn) {
+        
+        switch (item.getItemId()) {
+        case R.id.action_delete:
+        {
             //RssFeedContentsテーブルへのDelete文のWhere句の作成
             StringBuffer whereRssFeedContents = new StringBuffer(RssFeeds.RssFeedContentColumns.CHANNEL_ID).append("=").append(rssId);
 
@@ -186,12 +174,15 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
             //RSSフィードの削除処理をデータベースに実行
             RssFeeds.delete(RssFeeds.RssFeedContentColumns.CONTENT_URI, whereRssFeeds.toString(), null);
 
-            //画面の戻り値を設定
-            setResult(RESULT_OK);
+            String deleteMsg = (String)getResources().getText(R.string.fetch_rss_feed_content_delete);
+            ToastUtil.showToastShort(this, deleteMsg);
 
-            //画面終了
-            back();
-        } else if (view == reGetBtn) {
+            //記事一覧を更新
+            getArrayAdapter();
+            break;
+        }
+        case R.id.action_refresh:
+        {
             //RSSフィード一覧画面で選択されたRSSフィードのURLを取得
             final String url = (String)bundle.get("url");
 
@@ -207,18 +198,23 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
                 public void run() {
                     // RssContentsパース処理
                     RssParser.parseRssContents(url, rssId);
-                        handler.post(new Runnable() {
-                            
-                            public void run() {
-                                //データベースより記事一覧の値を取得し、記事一覧のListViewを更新
-                                ToastUtil.showToastLong(RssArticleListActivity.this, "RSSの再取得に成功しました。");
-                                getArrayAdapter();
-                            }
-                        }); 
+                    handler.post(new Runnable() {
+
+                        public void run() {
+                            //データベースより記事一覧の値を取得し、記事一覧のListViewを更新
+                            String refreshMsg = (String)getResources().getText(R.string.fetch_rss_feed_content_refresh);
+                            ToastUtil.showToastLong(RssArticleListActivity.this, refreshMsg);
+                            getArrayAdapter();
+                        }
+                    }); 
                 }
             }).start();
-
+            break;
         }
+        default:
+            break;
+        }
+        return true;
     }
 
     /**
@@ -304,4 +300,5 @@ public class RssArticleListActivity extends RssBaseActivity implements OnClickLi
         holder.task = new ThumbnailTask(holder.imgThum);
         holder.task.execute(imgUrl);
     }
+
 }
